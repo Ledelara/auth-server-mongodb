@@ -8,16 +8,16 @@ import { User } from "../models/userModels";
 const SECRET_KEY = process.env.JWT_SECRET || "secret-key";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!email || !password) {
-    res.status(400).json({ message: "Email e senha são obrigatórios." });
+  if (!name || !email || !password) {
+    res.status(400).json({ message: "Nome, email e senha são obrigatórios." });
     return;
   }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+    const user = new User({ name, email, password: hashedPassword });
     await user.save();
 
     res.status(201).json({ message: "Usuário registrado com sucesso." });

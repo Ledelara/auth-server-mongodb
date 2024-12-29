@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 
 import { User } from "../models/userModels";
 
+
 const SECRET_KEY = process.env.JWT_SECRET || "secret-key";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -49,35 +50,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
 
     res.status(200).json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erro ao autenticar usuário." });
-  }
-};
-
-export const getProfile = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    if (!req.user || typeof req.user === "string") {
-      res.status(401).json({ message: "Usuário não autenticado." });
-      return;
-    }
-
-    const user = await User.findById(req.user.id).select("-password");
-    if (!user) {
-      res.status(404).json({ message: "Usuário não encontrado." });
-      return;
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erro ao buscar perfil." });
   }
 };

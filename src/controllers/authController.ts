@@ -1,4 +1,4 @@
-import Jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 
@@ -46,7 +46,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Credenciais inválidas." });
     }
 
-    const token = Jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, {
+    const token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, {
       expiresIn: "1h",
     });
 

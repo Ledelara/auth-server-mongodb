@@ -36,7 +36,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    // Buscar o usuário incluindo o campo 'password'
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -44,7 +43,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Validar a senha
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -52,14 +50,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Gerar o token
     const token = jwt.sign(
       { id: user._id, email: user.email },
       SECRET_KEY,
       { expiresIn: "1h" }
     );
 
-    // Excluir a senha antes de enviar a resposta
     const { password: _, ...userWithoutPassword } = user.toObject();
 
     res.status(200).json({
